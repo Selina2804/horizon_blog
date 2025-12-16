@@ -1,14 +1,18 @@
+// vite.config.ts - FIXED
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import path from 'path'
+import { resolve } from 'path'
 
 export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./src"),
-      "tslib": "tslib/tslib.es6.js",
+      "@": resolve(__dirname, "./src"),
     },
+  },
+  build: {
+    chunkSizeWarningLimit: 1000,
+   
   },
   server: {
     proxy: {

@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import Card from "../../components/Card";
 import { useAuth } from "../../context/AuthContext";
-
+import type { Post } from '../../types/index';
 const BASE_URL = "/api";
 
 export default function DashboardAdmin() {
@@ -30,8 +30,8 @@ export default function DashboardAdmin() {
   });
 
   const totalPosts = posts.length;
-  const publicPosts = posts.filter((p) => p.isPublic).length;
-  const privatePosts = posts.filter((p) => !p.isPublic).length;
+  const publicPosts = posts.filter((p: Post) => p.isPublic).length;
+const privatePosts = posts.filter((p: Post) => !p.isPublic).length;
 
   // ✅ Hàm lấy tên tác giả từ authorId
   const getAuthor = (authorId: string) => {

@@ -6,18 +6,12 @@ import Card from "../../components/Card";
 import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
 import { X } from "lucide-react";
-import { useAuth } from "../../context/AuthContext";
 import { Editor } from "@tinymce/tinymce-react";
 
 const BASE_URL = "/api";
-
-// ✅ ImgBB API key
 const IMGBB_API_KEY = "8068c291d96c4970f773d1ef7b562fb1";
-
-// ✅ TinyMCE API key
 const TINYMCE_API_KEY = "5780sbucqutfi5xr5swj8hgnpxeusj9w0x22s2dizuy3cf6j";
 
-// ✅ Decode 2 lớp: URL + HTML entity
 function decodeFull(str: string) {
   try {
     const urlDecoded = decodeURIComponent(str);
@@ -33,7 +27,6 @@ export default function DashboardEdit() {
   const { id } = useParams({ from: "/dashboard/edit/$id" });
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { user } = useAuth();
 
   const { data: post, isLoading } = useQuery({
     queryKey: ["post-edit", id],

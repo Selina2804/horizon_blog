@@ -6,18 +6,12 @@ import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
 import { useAuth } from "../../context/AuthContext";
 import { X, Eye, EyeOff } from "lucide-react";
+import type { User } from '../../types/index';
 
 const BASE_URL = "/api";
 const IMGBB_API_KEY = "8068c291d96c4970f773d1ef7b562fb1";
 
-type User = {
-  id: string;
-  name: string;
-  email: string;
-  avatarUrl: string;
-  role: "user" | "admin";
-  password: string;
-};
+
 
 export default function AdminUsers() {
   const { user } = useAuth();
@@ -178,7 +172,7 @@ export default function AdminUsers() {
 
       {/* ✅ Danh sách user */}
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {users.map((u) => (
+       {users.map((u: User) => ( 
           <Card key={u.id} className="p-5 space-y-3">
             <div className="flex items-center gap-3">
               <img

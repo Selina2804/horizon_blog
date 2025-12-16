@@ -1,32 +1,12 @@
-import {
-  createContext,
-  useContext,
-  useState,
-  useEffect,
-  ReactNode,
-} from "react";
-import axios from "axios";
+// src/context/AuthContext.tsx
+import { createContext, useContext, useState, useEffect } from 'react';
+import axios from 'axios';
+import type { User, AuthContextType } from '../types/index';
+import type { ReactNode } from 'react'; 
 
-const BASE_URL = "/api";
+const BASE_URL = '/api';
 
-export type User = {
-  id: string;
-  name: string;
-  email: string;
-  avatarUrl: string;
-  role: "user" | "admin";
-  password: string;
-  favorites?: string[]; // ✅ THÊM FAVORITES
-};
 
-type AuthContextType = {
-  user: User | null;
-  login: (email: string, password: string) => Promise<User | null>;
-  logout: () => void;
-  register: (newUser: Omit<User, "id">) => Promise<boolean>;
-  updateUser: (updated: Partial<User>) => Promise<void>;
-  setUser: (u: User | null) => void; // ✅ THÊM
-};
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
