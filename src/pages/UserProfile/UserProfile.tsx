@@ -6,10 +6,7 @@ import Card from "../../components/Card";
 import { useAuth } from "../../context/AuthContext";
 import { Input } from "../../components/ui/input";
 import { Button } from "../../components/ui/button";
-
-const BASE_URL = import.meta.env.PROD 
-  ? "https://693a3c10e8d59937aa0a30c1_mockapi.io/api"  // ĐÚNG (có dấu _)
-  : "/api";
+const BASE_URL = "https://693a3c10c8d59937aa0a30c1.mockapi.io";
 
 export type User = {
   id: string;
