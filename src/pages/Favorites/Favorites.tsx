@@ -5,7 +5,7 @@ import Card from "../../components/Card";
 import { Link } from "@tanstack/react-router";
 import { Heart, Star } from "lucide-react";
 
-const BASE_URL = "/api";
+const BASE_URL = "https://693a3c10e8d59937aa0a30c1.mockapi.io/api";
 
 type Post = {
   id: string;

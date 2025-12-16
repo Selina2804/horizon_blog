@@ -7,7 +7,7 @@ import {
 } from "react";
 import axios from "axios";
 
-const BASE_URL = "/api";
+const BASE_URL = "https://693a3c10e8d59937aa0a30c1.mockapi.io/api";
 
 export type User = {
   id: string;

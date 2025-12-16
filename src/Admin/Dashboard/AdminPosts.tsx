@@ -17,7 +17,7 @@ import {
   DialogFooter,
 } from "../../components/ui/dialog";
 
-const BASE_URL = "/api";
+const BASE_URL = "https://693a3c10e8d59937aa0a30c1.mockapi.io/api";
 
 const IMGBB_API_KEY = "8068c291d96c4970f773d1ef7b562fb1";
 const TINYMCE_API_KEY = "5780sbucqutfi5xr5swj8hgnpxeusj9w0x22s2dizuy3cf6j";
