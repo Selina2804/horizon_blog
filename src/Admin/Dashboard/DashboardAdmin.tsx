@@ -3,7 +3,9 @@ import axios from "axios";
 import Card from "../../components/Card";
 import { useAuth } from "../../context/AuthContext";
 
-const BASE_URL = "https://693a3c10c8d59937aa0a30c1.mockapi.io";
+const BASE_URL = import.meta.env.PROD 
+  ? "https://693a3c10c8d59937aa0a30c1.mockapi.io"  // ✅ URL ĐÚNG
+  : "/api";
 
 // ✅ Định nghĩa kiểu dữ liệu
 type User = {

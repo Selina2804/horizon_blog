@@ -8,7 +8,9 @@ import { Input } from "../../components/ui/input";
 import { X } from "lucide-react";
 import { Editor } from "@tinymce/tinymce-react";
 
-const BASE_URL = "https://693a3c10c8d59937aa0a30c1.mockapi.io";
+const BASE_URL = import.meta.env.PROD 
+  ? "https://693a3c10c8d59937aa0a30c1.mockapi.io"  // ✅ URL ĐÚNG
+  : "/api";
 
 // ✅ ImgBB API key
 const IMGBB_API_KEY = "8068c291d96c4970f773d1ef7b562fb1";

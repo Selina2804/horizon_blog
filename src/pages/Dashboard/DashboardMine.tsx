@@ -6,8 +6,9 @@ import { useAuth } from "../../context/AuthContext";
 import { Link } from "@tanstack/react-router";
 import { Heart } from "lucide-react";
 
-const BASE_URL = "https://693a3c10c8d59937aa0a30c1.mockapi.io";
-
+const BASE_URL = import.meta.env.PROD 
+  ? "https://693a3c10c8d59937aa0a30c1.mockapi.io"  // ✅ URL ĐÚNG
+  : "/api";
 type Post = {
   id: string;
   title: string;
