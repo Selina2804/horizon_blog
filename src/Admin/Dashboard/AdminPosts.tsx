@@ -242,13 +242,13 @@ export default function AdminPosts() {
 
           return (
             <Card key={post.id} className="p-4 space-y-3">
-              {post.images && post.images.length > 0 && (
-                  <img
-                    src={post.images[0]}
-                    className="w-full h-40 object-cover rounded-lg border"
-                    alt={post.title}
-                  />
-                )}
+          {post.images && post.images.length > 0 && post.images[0] && (
+              <img
+              src={post.images[0]} 
+              className="w-full h-40 object-cover rounded-lg border"
+              alt={post.title}
+              />
+              )}
 
               <h3 className="text-lg font-semibold">{post.title}</h3>
 

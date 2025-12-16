@@ -6,9 +6,34 @@ import Card from "../../components/Card";
 import { useAuth } from "../../context/AuthContext";
 import { Input } from "../../components/ui/input";
 import { Button } from "../../components/ui/button";
-import type { User as AppUser, Post as AppPost } from '../../types/index'; // ✅ Import đúng types
 
 const BASE_URL = "/api";
+
+export type User = {
+  id: string;
+  name: string;
+  email: string;
+  avatarUrl: string;
+  role: "user" | "admin";
+  password: string;
+  favorites?: string[];
+  bio?: string;        
+  coverUrl?: string;   
+  theme?: string;      
+
+};
+
+
+type Post = {
+  id: string;
+  title: string;
+  body: string;
+  images?: string[];
+  isPublic: boolean;
+  authorId: string;
+  likes?: string[]; // ✅ thêm likes
+};
+
 export default function UserProfile() {
   const { id } = useParams({ from: "/user/$id" });
   const { user: currentUser, setUser: setAuthUser } = useAuth();
@@ -17,7 +42,7 @@ export default function UserProfile() {
 
   const IMGBB_API_KEY = "8068c291d96c4970f773d1ef7b562fb1";
 
-  // ✅ Fetch user - Dùng AppUser type
+  // ✅ Fetch user
   const {
     data: user,
     isLoading: loadingUser,
@@ -25,12 +50,12 @@ export default function UserProfile() {
   } = useQuery({
     queryKey: ["user", id],
     queryFn: async () => {
-      const res = await axios.get<AppUser>(`${BASE_URL}/users/${id}`);
+      const res = await axios.get<User>(`${BASE_URL}/users/${id}`);
       return res.data;
     },
   });
 
-  // ✅ Fetch posts - Dùng AppPost type
+  // ✅ Fetch posts
   const {
     data: posts = [],
     isLoading: loadingPosts,
@@ -39,7 +64,7 @@ export default function UserProfile() {
     queryKey: ["user-posts", id],
     queryFn: async () => {
       try {
-        const res = await axios.get<AppPost[]>(`${BASE_URL}/posts?authorId=${id}`);
+        const res = await axios.get<Post[]>(`${BASE_URL}/posts?authorId=${id}`);
         return res.data.filter((p) => p.isPublic);
       } catch (err: any) {
         if (err.response?.status === 404) return [];
@@ -94,35 +119,20 @@ export default function UserProfile() {
     setCoverUrl(url);
   };
 
-  // ✅ FIX QUAN TRỌNG: Lưu giao diện
+  // ✅ Lưu giao diện
   const handleSave = async () => {
     if (!user) return;
 
-    // ✅ Tạo updatedUser đầy đủ các trường bắt buộc của AppUser
-    const updatedUser: AppUser = {
-      // Các trường bắt buộc từ AppUser interface
-      id: user.id,
-      name: user.name,
-      email: user.email || "", // ✅ THÊM email
-      password: user.password || "", // ✅ THÊM password
-      avatarUrl: user.avatarUrl,
-      role: user.role || "user", // ✅ THÊM role
-      
-      // Các trường tùy chỉnh
+    const updatedUser: User = {
+      ...user,
       bio,
       coverUrl,
       theme: themeValue,
-      
-      // Các trường optional khác
-      favorites: user.favorites || [],
-      createdAt: user.createdAt,
     };
 
     await axios.put(`${BASE_URL}/users/${user.id}`, updatedUser);
 
-    if (isOwner && setAuthUser) {
-      setAuthUser(updatedUser); // ✅ Type đã match
-    }
+    if (isOwner) setAuthUser(updatedUser);
 
     setOpenModal(false);
     alert("Đã lưu giao diện cá nhân!");
@@ -155,14 +165,12 @@ export default function UserProfile() {
           <img
             src={user.coverUrl || "https://unsplash.it/1200/400?random=profile"}
             className="w-full h-full object-cover opacity-90"
-            alt="Cover"
           />
 
           {/* Avatar */}
           <img
             src={user.avatarUrl}
             className="absolute -bottom-10 left-6 w-24 h-24 rounded-full border-4 border-white shadow-lg object-cover"
-            alt={user.name}
           />
         </div>
 
@@ -208,8 +216,9 @@ export default function UserProfile() {
                 decodedBody = decodeURIComponent(post.body);
               } catch {}
 
-              const postImages = post.images || []; // ✅ Fix undefined
-              const thumbnail = postImages[0] || `https://unsplash.it/600/300?random=${post.id}`;
+              const thumbnail =
+                post.images?.[0] ||
+                `https://unsplash.it/600/300?random=${post.id}`;
 
               return (
                 <Card
@@ -217,11 +226,7 @@ export default function UserProfile() {
                   className="overflow-hidden border shadow-sm hover:shadow-md transition"
                 >
                   <Link to={`/post/${post.id}`}>
-                    <img 
-                      src={thumbnail} 
-                      className="w-full h-40 object-cover" 
-                      alt={post.title}
-                    />
+                    <img src={thumbnail} className="w-full h-40 object-cover" />
                   </Link>
 
                   <div className="p-4 space-y-2">
@@ -236,11 +241,12 @@ export default function UserProfile() {
                       dangerouslySetInnerHTML={{ __html: decodedBody }}
                     />
 
-                    {/* Likes */}
+                    {/* ✅ ✅ ✅ THÊM TIM Ở ĐÂY — KHÔNG ĐỤNG GÌ KHÁC */}
                     <div className="flex items-center gap-1 text-sm text-gray-700 pt-1">
                       <span className="text-red-500 text-lg">❤️</span>
                       <span>{post.likes?.length || 0}</span>
                     </div>
+                    {/* ✅ ✅ ✅ HẾT PHẦN THÊM */}
                   </div>
                 </Card>
               );
@@ -289,7 +295,6 @@ export default function UserProfile() {
                 <img
                   src={coverUrl}
                   className="w-full h-32 object-cover rounded-lg border"
-                  alt="Cover preview"
                 />
               )}
             </div>
