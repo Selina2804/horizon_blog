@@ -5,7 +5,7 @@ import Card from "../../components/Card";
 import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
 import { useAuth } from "../../context/AuthContext";
-import { X, Eye, EyeOff } from "lucide-react";
+import { X, Eye, EyeOff, Loader2 } from "lucide-react";
 
 const BASE_URL = "/api";
 const IMGBB_API_KEY = "8068c291d96c4970f773d1ef7b562fb1";
@@ -54,7 +54,7 @@ export default function AdminUsers() {
   if (!user) return <p className="p-6 text-center text-red-500">Bạn cần đăng nhập để xem trang quản trị.</p>;
   if (user.role !== "admin") return <p className="p-6 text-center text-red-500">Bạn không có quyền truy cập trang này.</p>;
 
-  // ✅ Fetch users
+  // ✅ Fetch users với loading state
   const { data: users = [], isLoading } = useQuery({
     queryKey: ["admin-users"],
     queryFn: async () => {
@@ -188,90 +188,114 @@ export default function AdminUsers() {
   // Default avatar fallback
   const defaultAvatar = "https://i.pravatar.cc/100?img=12";
 
+  // Hiển thị loading indicator
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center min-h-[400px]">
+        <div className="text-center space-y-4">
+          <Loader2 className="h-12 w-12 animate-spin text-gray-500 mx-auto" />
+          <p className="text-gray-600">Đang tải danh sách người dùng...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-8">
       <div className="flex justify-between items-center">
         <h2 className="text-3xl font-bold">Quản lý tài khoản</h2>
-
         <Button onClick={openAddModal}>➕ Thêm tài khoản</Button>
       </div>
 
       {/* ✅ Danh sách user */}
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {users.map((u: User) => (
-          <Card key={u.id} className="p-5 space-y-3">
-            <div className="flex items-center gap-3">
-              <img
-                src={u.avatarUrl || defaultAvatar}
-                className="w-12 h-12 rounded-full object-cover border"
-                alt={`Avatar của ${u.name}`}
-                onError={(e) => {
-                  (e.target as HTMLImageElement).src = defaultAvatar;
-                }}
-              />
-              <div>
-                <p className="font-semibold">{u.name}</p>
-                <p className="text-sm text-gray-500 truncate">{u.email}</p>
+      {users.length === 0 ? (
+        <div className="text-center py-12 border-2 border-dashed border-gray-300 rounded-lg">
+          <p className="text-gray-500 text-lg">Chưa có người dùng nào</p>
+          <Button onClick={openAddModal} className="mt-4">
+            Thêm người dùng đầu tiên
+          </Button>
+        </div>
+      ) : (
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {users.map((u: User) => (
+            <Card key={u.id} className="p-5 space-y-3">
+              <div className="flex items-center gap-3">
+                <img
+                  src={u.avatarUrl || defaultAvatar}
+                  className="w-12 h-12 rounded-full object-cover border"
+                  alt={`Avatar của ${u.name}`}
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = defaultAvatar;
+                  }}
+                />
+                <div>
+                  <p className="font-semibold">{u.name}</p>
+                  <p className="text-sm text-gray-500 truncate">{u.email}</p>
+                </div>
               </div>
-            </div>
 
-            <p className="text-sm">
-              Quyền:{" "}
-              <span
-                className={`font-semibold ${
-                  u.role === "admin" ? "text-red-600" : "text-blue-600"
-                }`}
-              >
-                {u.role === "admin" ? "Quản trị viên" : "Người dùng"}
-              </span>
-            </p>
+              <p className="text-sm">
+                Quyền:{" "}
+                <span
+                  className={`font-semibold ${
+                    u.role === "admin" ? "text-red-600" : "text-blue-600"
+                  }`}
+                >
+                  {u.role === "admin" ? "Quản trị viên" : "Người dùng"}
+                </span>
+              </p>
 
-            <div className="flex gap-2 pt-2">
-              <Button
-                variant="outline"
-                onClick={() => {
-                  if (u.id === user?.id) {
-                    alert("Bạn không thể thay đổi quyền của chính mình!");
-                    return;
-                  }
-                  if (window.confirm(`Bạn có chắc chắn muốn ${u.role === "admin" ? "hạ quyền" : "nâng quyền"} cho "${u.name}"?`)) {
-                    toggleRole.mutate(u);
-                  }
-                }}
-                className="flex-1"
-                disabled={toggleRole.isPending || u.id === user?.id}
-              >
-                {toggleRole.isPending ? "Đang xử lý..." : u.role === "admin" ? "Hạ quyền" : "Nâng quyền"}
-              </Button>
+              <div className="flex gap-2 pt-2">
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    if (u.id === user?.id) {
+                      alert("Bạn không thể thay đổi quyền của chính mình!");
+                      return;
+                    }
+                    if (window.confirm(`Bạn có chắc chắn muốn ${u.role === "admin" ? "hạ quyền" : "nâng quyền"} cho "${u.name}"?`)) {
+                      toggleRole.mutate(u);
+                    }
+                  }}
+                  className="flex-1"
+                  disabled={toggleRole.isPending || u.id === user?.id}
+                >
+                  {toggleRole.isPending ? (
+                    <Loader2 className="h-4 w-4 animate-spin mx-auto" />
+                  ) : u.role === "admin" ? "Hạ quyền" : "Nâng quyền"}
+                </Button>
 
-              <Button
-                variant="outline"
-                onClick={() => openEditModal(u)}
-                className="flex-1"
-              >
-                Sửa
-              </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => openEditModal(u)}
+                  className="flex-1"
+                >
+                  Sửa
+                </Button>
 
-              <Button
-                variant="destructive"
-                onClick={() => {
-                  if (u.id === user?.id) {
-                    alert("Bạn không thể xóa tài khoản của chính mình!");
-                    return;
-                  }
-                  if (window.confirm(`Bạn có chắc chắn muốn xóa tài khoản "${u.name}"?\nHành động này không thể hoàn tác!`)) {
-                    deleteUser.mutate(u.id);
-                  }
-                }}
-                className="flex-1"
-                disabled={deleteUser.isPending || u.id === user?.id}
-              >
-                {deleteUser.isPending ? "Đang xóa..." : "Xóa"}
-              </Button>
-            </div>
-          </Card>
-        ))}
-      </div>
+                <Button
+                  variant="destructive"
+                  onClick={() => {
+                    if (u.id === user?.id) {
+                      alert("Bạn không thể xóa tài khoản của chính mình!");
+                      return;
+                    }
+                    if (window.confirm(`Bạn có chắc chắn muốn xóa tài khoản "${u.name}"?\nHành động này không thể hoàn tác!`)) {
+                      deleteUser.mutate(u.id);
+                    }
+                  }}
+                  className="flex-1"
+                  disabled={deleteUser.isPending || u.id === user?.id}
+                >
+                  {deleteUser.isPending ? (
+                    <Loader2 className="h-4 w-4 animate-spin mx-auto" />
+                  ) : "Xóa"}
+                </Button>
+              </div>
+            </Card>
+          ))}
+        </div>
+      )}
 
       {/* ✅ Modal Sửa */}
       {openEdit && (
@@ -387,7 +411,12 @@ export default function AdminUsers() {
                 onClick={() => updateUser.mutate()} 
                 disabled={updateUser.isPending}
               >
-                {updateUser.isPending ? "Đang lưu..." : "Lưu thay đổi"}
+                {updateUser.isPending ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                    Đang lưu...
+                  </>
+                ) : "Lưu thay đổi"}
               </Button>
             </div>
           </Card>
@@ -509,7 +538,12 @@ export default function AdminUsers() {
                 onClick={() => addUser.mutate()} 
                 disabled={addUser.isPending}
               >
-                {addUser.isPending ? "Đang thêm..." : "Thêm tài khoản"}
+                {addUser.isPending ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                    Đang thêm...
+                  </>
+                ) : "Thêm tài khoản"}
               </Button>
             </div>
           </Card>
