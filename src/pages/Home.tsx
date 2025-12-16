@@ -5,9 +5,9 @@ import Card from "../components/Card";
 import { useAuth } from "../context/AuthContext";
 import { Heart, Star } from "lucide-react";
 
-const BASE_URL = import.meta.env.MODE === 'development' 
-  ? "/api" 
-  : "https://693a3c10c8d59937aa0a30c1.mockapi.io/api";
+const BASE_URL = import.meta.env.PROD 
+  ? "https://693a3c10e8d59937aa0a30c1_mockapi.io/api"  // ĐÚNG (có dấu _)
+  : "/api";
 
 type User = {
   id: string;

@@ -7,9 +7,9 @@ import { Input } from "../../components/ui/input";
 import { useAuth } from "../../context/AuthContext";
 import { X, Eye, EyeOff, Loader2 } from "lucide-react";
 
-const BASE_URL = import.meta.env.MODE === 'development' 
-  ? "/api" 
-  : "https://693a3c10c8d59937aa0a30c1.mockapi.io/api";
+const BASE_URL = import.meta.env.PROD 
+  ? "https://693a3c10e8d59937aa0a30c1_mockapi.io/api"  // ĐÚNG (có dấu _)
+  : "/api";
 const IMGBB_API_KEY = "8068c291d96c4970f773d1ef7b562fb1";
 
 type User = {
