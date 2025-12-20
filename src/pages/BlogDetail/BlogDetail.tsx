@@ -3,10 +3,12 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { useAuth } from "../../context/AuthContext";
 import { Heart, Star } from "lucide-react";
+import CommentSection from "../../components/CommentSection"; // ✅ IMPORT
 
 const BASE_URL = import.meta.env.PROD 
-  ? "https://693a3c10c8d59937aa0a30c1.mockapi.io"  // ✅ URL ĐÚNG
+  ? "https://693a3c10c8d59937aa0a30c1.mockapi.io"
   : "/api";
+
 type Post = {
   id: string;
   title: string;
@@ -227,6 +229,9 @@ export default function BlogDetail() {
             ))}
           </div>
         )}
+
+        {/* ✅ COMMENT SECTION - ADD THIS */}
+        <CommentSection postId={id} />
       </article>
     </div>
   );

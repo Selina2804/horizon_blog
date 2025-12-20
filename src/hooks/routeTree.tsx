@@ -7,7 +7,8 @@ import BlogDetail from "../pages/BlogDetail/BlogDetail";
 import Login from "../pages/Login/Login";
 import Register from "../pages/Register/Register";
 import About from "../pages/About/About";
-import Favorites from "../pages/Favorites/Favorites"; 
+import Favorites from "../pages/Favorites/Favorites";
+import Search from "../pages/Search/Search"; // ✅ THÊM IMPORT
 
 // User Pages
 import UserProfile from "../pages/UserProfile/UserProfile";
@@ -55,7 +56,7 @@ const postRoute = new Route({
 const favoritesRoute = new Route({
   getParentRoute: () => rootRoute,
   path: "/favorites",
-  component: Favorites, // ✅ THÊM ROUTE
+  component: Favorites,
 });
 
 const userProfileRoute = new Route({
@@ -80,6 +81,13 @@ const aboutRoute = new Route({
   getParentRoute: () => rootRoute,
   path: "/about",
   component: About,
+});
+
+// ✅ THÊM SEARCH ROUTE
+const searchRoute = new Route({
+  getParentRoute: () => rootRoute,
+  path: "/search",
+  component: Search,
 });
 
 // ✅ Dashboard layout (USER)
@@ -142,7 +150,8 @@ const adminUsersRoute = new Route({
 export const routeTree = rootRoute.addChildren([
   homeRoute,
   postRoute,
-  favoritesRoute, // ✅ THÊM VÀO ĐÂY
+  favoritesRoute,
+  searchRoute, // ✅ THÊM VÀO ĐÂY
   userProfileRoute,
   loginRoute,
   registerRoute,
